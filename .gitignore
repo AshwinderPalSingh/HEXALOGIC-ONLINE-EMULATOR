@@ -1,0 +1,42 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.venv/
+venv/
+.pytest_cache/
+.tox/
+build/
+dist/
+
+# --- Node / frontend build ---
+node_modules/
+dist/
+
+# --- macOS ---
+.DS_Store
+
+# --- LaTeX build artifacts ---
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# --- Editor / OS ---
+.vscode/
+.idea/
+*.swp
+
+# --- Duplicate-file artifacts (accidental re-downloads, "Save As" copies) ---
+* [0-9].*
+* [0-9]
+
+# --- Local env / secrets ---
+.env
+.env.local

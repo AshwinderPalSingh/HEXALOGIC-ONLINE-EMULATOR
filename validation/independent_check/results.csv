@@ -1,0 +1,5 @@
+program,description,hexalogic_cycles,hexalogic_detail,keil_cycles,error_pct,methodology_note
+led_rotate.asm,LED rotate — cycles for 1st full 8-step rotation period,820871,820871 machine cycles at 12 MHz = 0.820871 s,[PENDING_KEIL_DATA],[PENDING_KEIL_DATA],HexaLogic measurement only. Keil/hardware comparison pending.
+timer0_overflow.asm,Timer 0 Mode 1 — cycles from start until TF0 overflow,65543,TF0 set after 65543 cycles,[PENDING_KEIL_DATA],[PENDING_KEIL_DATA],HexaLogic measurement only. Keil/hardware comparison pending.
+uart_tx_9600.asm,"UART TX 9600 baud — cycles to transmit 'HI' (0x48, 0x49)",1930,"TX bytes: ['0x48', '0x49'], 1930 cycles at 11.0592 MHz",[PENDING_KEIL_DATA],[PENDING_KEIL_DATA],HexaLogic measurement only. Keil/hardware comparison pending.
+interrupt_entry.asm,INT0 edge-triggered — interrupt entry latency,4,"Latency=4 cycles (edge to ISR-entry instruction retiring), ISR ran=yes (R7=0xaa)",[PENDING_KEIL_DATA],[PENDING_KEIL_DATA],HexaLogic measurement only. Keil/hardware comparison pending.

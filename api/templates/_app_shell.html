@@ -1,0 +1,389 @@
+<div class="ide-root" id="ide-root" data-workspace="code">
+    <div class="app-loader" id="app-loader" aria-live="polite">
+        <div class="loader-shell">
+            <div class="loader-spinner" aria-hidden="true"></div>
+            <img class="loader-logo" src="{{ asset_prefix }}/hexlogic-logo.png" alt="HexaLogic logo"
+                onerror="this.onerror=null;this.src='{{ asset_prefix }}/hexlogic-logo-light.png';">
+            <div class="loader-copy">
+                <div class="loader-title">HexaLogic Emulator</div>
+            </div>
+            <div class="loader-bar"><span id="loader-progress"></span></div>
+        </div>
+    </div>
+    <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+    <div class="fs-hint" id="fs-hint">Press <kbd>Esc</kbd> to exit fullscreen</div>
+
+    <!-- ═══ TIER 1: MENUBAR ═══════════════════════════════════════════ -->
+    <div class="hexa-menubar" id="hexa-menubar">
+        <div class="hexa-brand">
+            <img class="hexa-brand-logo" src="{{ asset_prefix }}/hexlogic-logo.png" alt="HexaLogic logo"
+                onerror="this.onerror=null;this.src='{{ asset_prefix }}/hexlogic-logo-light.png';">
+            <div class="brand-meta">
+                <span class="brand-name">HexaLogic</span>
+                <span class="brand-chip" id="target-chip">Target: 8051</span>
+            </div>
+        </div>
+
+        <nav class="hexa-menus" id="hexa-menus">
+            <!-- ── BUILD ──────────────────────────────────────── -->
+            <div class="hm" data-menu="build">
+                <button type="button" class="hm-trigger">Build</button>
+                <div class="hm-drop">
+                    <button type="button" class="hm-item" data-trigger="assemble">Assemble</button>
+                    <div class="hm-sep"></div>
+                    <button type="button" class="hm-item" id="download_output">Download Output</button>
+                    <button type="button" class="hm-item" id="export_state">Export State</button>
+                    <button type="button" class="hm-item" id="import_state">Import State</button>
+                </div>
+            </div>
+            <!-- ── EXECUTE ────────────────────────────────────── -->
+            <div class="hm" data-menu="execute">
+                <button type="button" class="hm-trigger">Execute</button>
+                <div class="hm-drop">
+                    <button type="button" class="hm-item" data-trigger="run">Run</button>
+                    <button type="button" class="hm-item" data-trigger="pause">Pause</button>
+                    <button type="button" class="hm-item" data-trigger="stop">Stop</button>
+                    <button type="button" class="hm-item" data-trigger="reset">Reset</button>
+                    <div class="hm-sep"></div>
+                    <button type="button" class="hm-item" data-trigger="step">Step Into</button>
+                    <button type="button" class="hm-item" data-trigger="step_over">Step Over</button>
+                    <button type="button" class="hm-item" data-trigger="step_out">Step Out</button>
+                    <button type="button" class="hm-item" data-trigger="step_back">Step Back</button>
+                    <button type="button" class="hm-item" data-trigger="run_to_cursor">Run To Cursor</button>
+                </div>
+            </div>
+            <!-- ── TARGET ─────────────────────────────────────── -->
+            <div class="hm" data-menu="target">
+                <button type="button" class="hm-trigger">Target</button>
+                <div class="hm-drop hm-drop-wide">
+                    <div class="hm-item hm-row" data-stop-close>
+                        Architecture
+                        <select id="architecture_select" class="hm-sel">
+                            <option value="8051">8051</option>
+                            <option value="arm">ARM</option>
+                        </select>
+                    </div>
+                    <div class="hm-item hm-row" data-stop-close>
+                        Endianness
+                        <select id="endian_select" class="hm-sel">
+                            <option value="little">Little</option>
+                            <option value="big">Big</option>
+                        </select>
+                    </div>
+                    <div class="hm-item hm-row" data-stop-close>
+                        Execution Mode
+                        <select id="execution_mode_select" class="hm-sel">
+                            <option value="realtime">Realtime</option>
+                            <option value="fast">Fast</option>
+                        </select>
+                    </div>
+                    <div class="hm-sep"></div>
+                    <div class="hm-item hm-clock-row" data-stop-close>
+                        Clock
+                        <select id="clock_preset" class="hm-sel hm-sel-sm" aria-label="Clock preset">
+                            <option value="11059200">11.0592M</option>
+                            <option value="12000000">12M</option>
+                            <option value="16000000">16M</option>
+                            <option value="24000000">24M</option>
+                            <option value="48000000">48M</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input id="clock_input" class="hm-clock-input" type="number" min="1" max="10000000000"
+                            step="1" value="11059200" autocomplete="off" aria-label="Clock frequency in hertz">
+                        <button type="button" class="hm-clock-set" id="clock_apply">Set</button>
+                    </div>
+                    <div class="hm-sep"></div>
+                    <label class="hm-item hm-check-row" data-stop-close>
+                        Debug Mode
+                        <input type="checkbox" id="debug_toggle" class="hm-toggle">
+                        <span class="hm-toggle-track"><span class="hm-toggle-thumb"></span></span>
+                    </label>
+                </div>
+            </div>
+            <!-- ── INSPECT ────────────────────────────────────── -->
+            <div class="hm" data-menu="inspect">
+                <button type="button" class="hm-trigger">Inspect</button>
+                <div class="hm-drop">
+                    <button type="button" class="hm-item workspace-tab" id="workspace_code" data-mode="code" data-workspace="code">View: Code Panel</button>
+                    <button type="button" class="hm-item workspace-tab" id="workspace_hardware" data-mode="hardware" data-workspace="hardware">View: Hardware Panel</button>
+                    <div class="hm-sep"></div>
+                    <button type="button" class="hm-item" data-action="toggle-memory-edit">Memory Edit</button>
+                    <button type="button" class="hm-item" id="clear_breakpoints">Clear Breakpoints</button>
+                    <button type="button" class="hm-item" id="waveform_toggle">Waveform Viewer</button>
+                    <div class="hm-sep"></div>
+                    <button type="button" class="hm-item" data-action="toggle-converter">Base Converter</button>
+                </div>
+            </div>
+            <!-- ── WORKSPACE ──────────────────────────────────── -->
+            <div class="hm" data-menu="workspace">
+                <button type="button" class="hm-trigger">Workspace</button>
+                <div class="hm-drop">
+                    <button type="button" class="hm-item" id="theme_toggle">Dark Mode<span class="hm-check" id="hm-theme-check"></span></button>
+                    <div class="hm-sep"></div>
+                    <button type="button" class="hm-item" data-trigger="vh_export_btn">Save Layout</button>
+                    <button type="button" class="hm-item" data-trigger="vh_import_btn">Load Layout</button>
+                    <button type="button" class="hm-item" data-trigger="vh_zoom_reset">Reset View</button>
+                    <div class="hm-sep"></div>
+                    <button type="button" class="hm-item" id="fullscreen_toggle" data-action="toggle-fullscreen">Fullscreen</button>
+                    <button type="button" class="hm-item" data-trigger="vh_test_btn">Run Hardware Test</button>
+                </div>
+            </div>
+            <!-- ── METRICS ─────────────────────────────────────── -->
+            <div class="hm" data-menu="metrics">
+                <button type="button" class="hm-trigger">Metrics</button>
+                <div class="hm-drop hm-drop-metrics" id="metrics-menubar-drop" data-stop-close>
+                    <div class="hm-metrics-header">Runtime Metrics</div>
+                    <div id="metrics-panel-body" class="hm-metrics-body"></div>
+                </div>
+            </div>
+            <!-- ── HELP ───────────────────────────────────────── -->
+            <div class="hm" data-menu="help">
+                <button type="button" class="hm-trigger">Help</button>
+                <div class="hm-drop">
+                    <button type="button" class="hm-item" id="help_toggle" aria-expanded="false" aria-controls="help-popover">Documentation</button>
+                    <div class="hm-sep"></div>
+                    <button type="button" class="hm-item" data-action="show-about">About HexaLogic</button>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ═══ TIER 2: ICON TOOLBAR ═══════════════════════════════════ -->
+    <div class="hexa-toolbar" id="hexa-toolbar">
+        <!-- Build -->
+        <div class="htb-group">
+            <button type="button" class="htb-btn htb-build" id="assemble"><span class="htb-lbl">Assemble</span></button>
+        </div>
+        <div class="htb-sep" aria-hidden="true"></div>
+        <!-- Execution -->
+        <div class="htb-group">
+            <button type="button" class="htb-btn htb-run" id="run"><span class="htb-lbl">Run</span></button>
+            <button type="button" class="htb-btn" id="pause"><span class="htb-lbl">Pause</span></button>
+            <button type="button" class="htb-btn htb-stop" id="stop"><span class="htb-lbl">Stop</span></button>
+            <button type="button" class="htb-btn htb-reset" id="reset"><span class="htb-lbl">Reset</span></button>
+        </div>
+        <div class="htb-sep" aria-hidden="true"></div>
+        <!-- Step -->
+        <div class="htb-group">
+            <button type="button" class="htb-btn" id="step"><span class="htb-lbl">Step</span></button>
+            <button type="button" class="htb-btn" id="step_over"><span class="htb-lbl">Over</span></button>
+            <button type="button" class="htb-btn" id="step_out"><span class="htb-lbl">Out</span></button>
+            <button type="button" class="htb-btn" id="step_back"><span class="htb-lbl">Back</span></button>
+            <button type="button" class="htb-btn" id="run_to_cursor"><span class="htb-lbl">Cursor</span></button>
+        </div>
+        <div class="htb-sep" aria-hidden="true"></div>
+        <!-- View toggle -->
+        <div class="htb-group">
+            <button type="button" class="htb-view workspace-tab is-active" data-mode="code" data-workspace="code">Code</button>
+            <button type="button" class="htb-view workspace-tab" data-mode="hardware" data-workspace="hardware">HW</button>
+        </div>
+        <div class="htb-sep" aria-hidden="true"></div>
+        <!-- Config chips — synced from Target menu selects -->
+        <div class="htb-group htb-cfg">
+            <button type="button" class="htb-chip" data-open-menu="target" title="Architecture — click to change"><span class="htb-chip-key">Arch</span><span class="htb-chip-val" id="htb_arch">8051</span></button>
+            <button type="button" class="htb-chip" data-open-menu="target" title="Endianness — click to change"><span class="htb-chip-key">Endian</span><span class="htb-chip-val" id="htb_endian">Little</span></button>
+            <button type="button" class="htb-chip" data-open-menu="target" title="Execution mode — click to change"><span class="htb-chip-key">Exec</span><span class="htb-chip-val" id="htb_exec">Realtime</span></button>
+        </div>
+        <div class="htb-sep" aria-hidden="true"></div>
+        <!-- Speed -->
+        <div class="htb-group htb-speed">
+            <span class="htb-speed-lbl">Speed</span>
+            <input id="run_speed" class="htb-speed-range" type="range" min="1" max="10" value="6">
+            <span class="htb-speed-val" id="speed_label">6x</span>
+        </div>
+    </div>
+
+    <!-- ═══ FLOATING PANELS ════════════════════════════════════════ -->
+    <!-- Base Converter -->
+    <div class="hexa-float" id="converter-float" hidden>
+        <div class="hf-head"><span>Base Converter</span><button type="button" class="hf-close" data-close="converter-float">×</button></div>
+        <div class="hf-body">
+            <select id="convert_from" class="hf-sel" aria-label="Convert from">
+                <option value="hex">Hex</option><option value="dec">Dec</option><option value="bin">Bin</option>
+            </select>
+            <input class="hf-input" id="convert_input" autocomplete="off" placeholder="Value">
+            <span class="hf-arrow">→</span>
+            <select id="convert_to" class="hf-sel" aria-label="Convert to">
+                <option value="dec">Dec</option><option value="hex">Hex</option><option value="bin">Bin</option>
+            </select>
+            <input class="hf-output" id="convert_output" readonly aria-label="Conversion result">
+            <button type="button" class="hf-btn" id="convert_swap">Swap</button>
+        </div>
+    </div>
+    <!-- Memory Edit -->
+    <div class="hexa-float" id="memory-edit-float" hidden>
+        <div class="hf-head"><span>Memory Edit</span><button type="button" class="hf-close" data-close="memory-edit-float">×</button></div>
+        <div class="hf-body">
+            <input class="hf-input hf-wide" placeholder="Ex: 20H=12H or 0x40=255" id="memory_edit_input" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="help-popover" id="help-popover" hidden>
+        Help / Contact:
+        <a class="help-link" href="mailto:ashwinder.p.prof@gmail.com">ashwinder.p.prof@gmail.com</a>
+    </div>
+
+    <aside class="wave-drawer" id="wave-drawer" hidden aria-label="Logic waveform viewer">
+        <div class="wave-drawer-head">
+            <div class="wave-drawer-copy">
+                <div class="wave-drawer-title">Logic Wave Viewer</div>
+                <div class="wave-drawer-status" id="wave-status">No waveform channels detected.</div>
+            </div>
+            <button type="button" class="tool-btn tiny" id="wave-collapse">Close</button>
+        </div>
+        <div class="wave-drawer-body">
+            <div class="empty-output" id="wave-empty">Run code that toggles ports to populate the waveform view.</div>
+            <div class="wave-list" id="wave-list"></div>
+        </div>
+    </aside>
+
+    <main class="workspace modern-workspace" id="workspace">
+        <aside class="panel-column left-pane" data-column="left">
+            <section class="panel dock-panel target-panel" data-panel="target">
+                <div class="panel-title">Breakpoints</div>
+                <div class="panel-content">
+                    <ul class="project-tree" id="project-tree" hidden></ul>
+                    <div class="breakpoint-summary">
+                        <div id="breakpoint-list" class="summary-body">None</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel dock-panel registers-panel" data-panel="execution">
+                <div class="panel-title">Execution State</div>
+                <div id="exec-state-panel" class="panel-content"></div>
+            </section>
+
+            <section class="panel dock-panel registers-panel" data-panel="registers">
+                <div class="panel-title">Registers and Flags</div>
+                <div id="registers-panel-body" class="panel-content panel-stack"></div>
+            </section>
+
+            <section class="panel dock-panel" data-panel="callstack">
+                <div class="panel-title">Call Stack</div>
+                <div id="call-stack-body" class="panel-content"></div>
+            </section>
+        </aside>
+
+        <div class="col-resizer" data-resizer="left" role="separator" aria-orientation="vertical"
+            aria-label="Resize left and center panels"></div>
+
+        <section class="panel-column center-pane" data-column="center">
+            <div class="code-workspace">
+                <section class="panel dock-panel editor-panel" data-panel="editor">
+                    <div class="panel-title panel-title-row">
+                        <span>Editor - main.asm</span>
+                    </div>
+                    <div class="editor-shell">
+                        <div id="editor-host" class="editor-host"></div>
+                    </div>
+                </section>
+
+                <section class="panel dock-panel assembler-panel" data-panel="assembler">
+                    <div class="panel-title">Assembler Output</div>
+                    <div id="assembler-panel-body" class="panel-content"></div>
+                </section>
+
+                <section class="panel dock-panel debugger-panel" data-panel="debugger">
+                    <div class="panel-title">Debugger Console</div>
+                    <div class="debugger-grid">
+                        <div id="debug-console" class="debug-console"></div>
+                        <div id="error-box" class="error-box" hidden>No errors.</div>
+                    </div>
+                </section>
+
+                <section class="panel dock-panel trace-panel" data-panel="trace">
+                    <div class="panel-title">Trace Timeline</div>
+                    <div id="trace-panel-body" class="panel-content trace-timeline"></div>
+                </section>
+            </div>
+
+            <section class="panel dock-panel hardware-workspace" id="hardware-panel" data-panel="hardware" aria-label="Virtual hardware">
+                <div class="panel-title panel-title-row">
+                    <span>Virtual Hardware</span>
+                    <div class="vh-toolbar">
+                        <button type="button" class="tool-btn tiny" id="vh_zoom_out">−</button>
+                        <span class="vh-zoom-label" id="vh_zoom_label">100%</span>
+                        <button type="button" class="tool-btn tiny" id="vh_zoom_in">+</button>
+                        <button type="button" class="tool-btn tiny" id="vh_zoom_reset">Reset View</button>
+                        <button type="button" class="tool-btn tiny" id="vh_export_btn">Save layout</button>
+                        <button type="button" class="tool-btn tiny" id="vh_import_btn">Load layout</button>
+                        <button type="button" class="tool-btn tiny" id="vh_test_btn">Run Hardware Test</button>
+                    </div>
+                </div>
+                <div class="vh-layout">
+                    <aside class="vh-sidebar">
+                        <div class="vh-sidebar-head">Components</div>
+                        <div class="vh-palette" id="vh-component-palette"></div>
+                    </aside>
+                    <div class="vh-board-shell">
+                        <div class="vh-board-toolbar">
+                            <span>Board</span>
+                        </div>
+                        <div class="vh-canvas-wrap" id="vh-board-viewport">
+                            <div class="vh-stage" id="hardware-stage">
+                                <svg class="vh-wire-layer" id="vh-wire-layer" aria-hidden="true"></svg>
+                                <div class="vh-selection-box" id="vh-selection-box" hidden></div>
+                                <div class="vh-mcu-board" id="vh-mcu-board"></div>
+                                <div class="vh-canvas" id="hardware-canvas"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="vh-debug-panel" id="vh-debug-panel">
+                    <div class="vh-debug-grid">
+                        <section class="vh-debug-block">
+                            <h4>Port Monitor</h4>
+                            <div id="vh-port-values" class="vh-debug-scroll"></div>
+                        </section>
+                        <section class="vh-debug-block">
+                            <h4>Component State</h4>
+                            <div id="vh-component-states" class="vh-debug-scroll"></div>
+                        </section>
+                        <section class="vh-debug-block">
+                            <h4>Validation</h4>
+                            <div id="vh-validation-errors" class="vh-debug-scroll"></div>
+                        </section>
+                        <section class="vh-debug-block">
+                            <h4>Signal Log</h4>
+                            <div id="vh-signal-log" class="vh-debug-scroll"></div>
+                        </section>
+                        <section class="vh-debug-block">
+                            <h4>Logic Analyzer</h4>
+                            <canvas id="vh-logic-analyzer" class="vh-logic-analyzer" width="420" height="150"></canvas>
+                        </section>
+                        <section class="vh-debug-block">
+                            <h4>Inspector</h4>
+                            <div id="vh-inspector" class="vh-debug-scroll"></div>
+                        </section>
+                        <section class="vh-debug-block">
+                            <h4>Test Mode</h4>
+                            <div id="vh-test-results" class="vh-debug-scroll"></div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div class="col-resizer" data-resizer="right" role="separator" aria-orientation="vertical"
+            aria-label="Resize center and right panels"></div>
+
+        <aside class="panel-column right-pane" data-column="right">
+            <section class="panel dock-panel memory-panel modern-memory-panel" data-panel="memory">
+                <div id="memory-ram" class="memory-window"></div>
+                <div id="memory-xram" class="memory-window"></div>
+                <div id="memory-rom" class="memory-window"></div>
+            </section>
+
+
+        </aside>
+
+        <div class="snap-preview" id="snap-preview" hidden></div>
+        <div class="floating-layer" id="floating-layer" aria-hidden="false"></div>
+    </main>
+
+    <footer class="statusbar">
+        <div id="status-text">Ready.</div>
+        <div id="status-extra" class="status-right">Mode: 8051</div>
+    </footer>
+</div>

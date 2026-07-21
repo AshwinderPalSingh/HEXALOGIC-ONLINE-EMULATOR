@@ -1,0 +1,38 @@
+[
+  {
+    "program": "led_rotate.asm",
+    "description": "LED rotate \u2014 cycles for 1st full 8-step rotation period",
+    "hexalogic_cycles": 820871,
+    "hexalogic_detail": "820871 machine cycles at 12 MHz = 0.820871 s",
+    "keil_cycles": "[PENDING_KEIL_DATA]",
+    "error_pct": "[PENDING_KEIL_DATA]",
+    "methodology_note": "HexaLogic measurement only. Keil/hardware comparison pending."
+  },
+  {
+    "program": "timer0_overflow.asm",
+    "description": "Timer 0 Mode 1 \u2014 cycles from start until TF0 overflow",
+    "hexalogic_cycles": 65543,
+    "hexalogic_detail": "TF0 set after 65543 cycles",
+    "keil_cycles": "[PENDING_KEIL_DATA]",
+    "error_pct": "[PENDING_KEIL_DATA]",
+    "methodology_note": "HexaLogic measurement only. Keil/hardware comparison pending."
+  },
+  {
+    "program": "uart_tx_9600.asm",
+    "description": "UART TX 9600 baud \u2014 cycles to transmit 'HI' (0x48, 0x49)",
+    "hexalogic_cycles": 1930,
+    "hexalogic_detail": "TX bytes: ['0x48', '0x49'], 1930 cycles at 11.0592 MHz",
+    "keil_cycles": "[PENDING_KEIL_DATA]",
+    "error_pct": "[PENDING_KEIL_DATA]",
+    "methodology_note": "HexaLogic measurement only. Keil/hardware comparison pending."
+  },
+  {
+    "program": "interrupt_entry.asm",
+    "description": "INT0 edge-triggered \u2014 interrupt entry latency",
+    "hexalogic_cycles": 4,
+    "hexalogic_detail": "Latency=4 cycles (edge to ISR-entry instruction retiring), ISR ran=yes (R7=0xaa)",
+    "keil_cycles": "[PENDING_KEIL_DATA]",
+    "error_pct": "[PENDING_KEIL_DATA]",
+    "methodology_note": "HexaLogic measurement only. Keil/hardware comparison pending."
+  }
+]

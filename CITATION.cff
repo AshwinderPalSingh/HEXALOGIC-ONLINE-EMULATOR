@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "HexaLogic: A Browser-Based Multi-Architecture Microcontroller Simulator"
+abstract: >-
+  HexaLogic is an open-source, browser-based simulation platform for the
+  AT89C51/8051 and ARM microcontroller architectures, built for embedded
+  systems education. It combines instruction-level discrete-event
+  simulation, deterministic time-travel debugging via reverse-delta state
+  capture, virtual hardware fault injection, an automated rule-based UART
+  protocol analyzer, and a multi-node virtual UART network, in a single
+  zero-installation environment. It extends an earlier open-source,
+  single-architecture 8051 simulator (see references below) with a second
+  target architecture and the capabilities described above.
+authors:
+  - family-names: Singh
+    given-names: "Ashwinder Pal"
+    affiliation: "Thapar Institute of Engineering and Technology, India"
+    email: asingh47_be23@gmail.com
+version: 1.0.0
+date-released: "2026-07-08"
+url: "https://www.hexalogic.xyz"
+repository-code: "https://github.com/AshwinderPalSingh/HEXALOGIC-ONLINE-EMULATOR"
+license: MIT
+keywords:
+  - "microcontroller simulation"
+  - "8051"
+  - "ARM"
+  - "discrete-event simulation"
+  - "time-travel debugging"
+  - "virtual hardware"
+  - "fault injection"
+  - "UART protocol analysis"
+  - "embedded systems education"
+references:
+  - type: software
+    title: "8051-Simulator: A Python-based simulator for the 8051 microcontroller"
+    authors:
+      - family-names: Shukla
+        given-names: Devansh
+    repository-code: "https://github.com/devanshshukla99/8051-Simulator"
+    year: 2022
+    license: MIT
+    notes: >-
+      HexaLogic's core/ execution engine and initial project scaffold
+      originated as a fork of this project. See README.md Acknowledgements
+      for details on what is original to HexaLogic.
